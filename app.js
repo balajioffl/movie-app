@@ -60,20 +60,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
 let dashboard = document.querySelector("#all-movies");
 
-function getMovies() {
+function getMovies(searchTitle='') {
   let movies = new XMLHttpRequest();
-  movies.open("get", "https://mimic-server-api.vercel.app/movies");
+  movies.open("GET", `https://mimic-server-api.vercel.app/movies${searchTitle ? `?title=${searchTitle}` : ''}`);
 
   movies.onload = function () {
     let movieData = JSON.parse(movies.response);
     console.log(movieData);
-
+    
+    dashboard.innerHTML = '';
+    
     let user = document.createElement("h2");
     user.textContent = "Welcome " + localStorage.getItem("username");
     user.classList.add("user");
     dashboard.appendChild(user);
 
     movieData.forEach((movie) => {
+    
       let movieCard = document.createElement("div");
       movieCard.classList.add("movie-card");
 
@@ -171,14 +174,16 @@ addMovie.addEventListener("click", () => {
   window.location.href = "addmovie.html";
 });
 
-let searchBar = document.querySelector("#searchBar");
-searchBar.addEventListener("input", () => {
-  let searchValue = searchBar.value.toLowerCase();
-  let movieCards = document.querySelectorAll(".movie-card");
+// using seach api find the movie
 
-  movieCards.forEach((card) => {
-    let title = card.querySelector(".movie-title").textContent.toLowerCase();
-    card.style.display = title.includes(searchValue) ? "block" : "none";
-  });
+let input = document.getElementById('searchBar');
+let search = document.getElementById('searchButton');
+
+
+search.addEventListener('click',()=>{
+  let input = document.getElementById('searchBar').value.trim();
+  getMovies(input);
+  // console.log(true);
 });
+
 
